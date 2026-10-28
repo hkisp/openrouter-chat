@@ -22,7 +22,7 @@
         </div>
         <div class="brand-text">
           <h1>SMART Chat</h1>
-          <p>免费模型 · 流式对话</p>
+          <p>对话 · 图片生成</p>
         </div>
       </div>
 
@@ -37,8 +37,18 @@
         <span class="field-label">模型</span>
         <div class="select-wrap">
           <select id="model-select">
-            <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra 550B（免费）</option>
-            <option value="openrouter/free">OpenRouter Free Router</option>
+            <optgroup label="对话模型">
+              <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra 550B（免费）</option>
+              <option value="openrouter/free">OpenRouter Free Router</option>
+            </optgroup>
+            <optgroup label="图片模型">
+              <option value="black-forest-labs/flux-3-image-klein">FLUX 3 Image Klein（便宜）</option>
+              <option value="black-forest-labs/flux-3-image">FLUX 3 Image</option>
+              <option value="qwen/qwen-image-2.1-turbo">Qwen Image 2.1 Turbo</option>
+              <option value="google/gemini-nano-banana-2.1">Nano Banana 2.1</option>
+              <option value="bytedance-seed/seedream-5-0-flash">Seedream 5.0 Flash</option>
+              <option value="meta/muse-image">Muse Image</option>
+            </optgroup>
           </select>
           <svg class="select-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
