@@ -42,9 +42,30 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
+const CHAT_MODELS = [
+  'nvidia/nemotron-3-ultra-550b-a55b:free',
+  'nvidia/nemotron-3.5-lightning:free',
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+  'nvidia/nemotron-3.5-super-vl:free',
+  'nvidia/nemotron-3.5-content-safety:free',
+  'google/gemma-4-31b-it:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'recursive/flint-v1.0:free',
+  'openrouter/free',
+  'liquid/lfm-2.5-2.6b:free',
+  'poolside/laguna-s-2.1:free',
+  'poolside/laguna-xs-2.1:free',
+  'thinkingmachines/inkling:free',
+  'thinkingmachines/inkling-small:free',
+  'xingchen-agi/xing4.0-29b-a4b:free',
+  'cohere/north-mini-code:free',
+  'dots-studio/dots-3-note-preview:free',
+];
+
 app.get('/api/models', (_req, res) => {
   res.json({
     defaultModel: DEFAULT_MODEL,
+    chatModels: CHAT_MODELS,
     imageModels: [...IMAGE_MODELS],
   });
 });
