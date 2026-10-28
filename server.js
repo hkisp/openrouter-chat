@@ -6,10 +6,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const ZHIPU_API_KEY = process.env.ZHIPU_API_KEY || process.env.BIGMODEL_API_KEY;
 const DEFAULT_MODEL =
   process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b:free';
 const OPENROUTER_CHAT_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_IMAGES_URL = 'https://openrouter.ai/api/v1/images';
+const ZHIPU_CHAT_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+
+/** App model id -> Zhipu/BigModel upstream model name. */
+const ZHIPU_MODELS = {
+  'zhipu/glm-4.7-flash': 'glm-4.7-flash',
+  'glm-4.7-flash': 'glm-4.7-flash',
+};
 
 /** Models that use OpenRouter Image API (POST /api/v1/images). */
 const IMAGE_MODELS = new Set([
@@ -38,6 +46,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     hasKey: Boolean(OPENROUTER_API_KEY),
+    hasZhipuKey: Boolean(ZHIPU_API_KEY),
     defaultModel: DEFAULT_MODEL,
   });
 });
@@ -54,6 +63,8 @@ const CHAT_MODELS = [
   'xingchen-agi/xing4.0-29b-a4b:free',
   'cohere/north-mini-code:free',
   'dots-studio/dots-3-note-preview:free',
+  'zhipu/glm-4.7-flash',
+  'z-ai/glm-4.7-flash',
 ];
 
 app.get('/api/models', (_req, res) => {
@@ -65,14 +76,10 @@ app.get('/api/models', (_req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-  if (!OPENROUTER_API_KEY) {
-    return res.status(500).json({
-      error: 'OPENROUTER_API_KEY is not set. Copy .env.example to .env and add your key.',
-    });
-  }
-
   const { messages, model, stream = true } = req.body || {};
   const chosen = model || DEFAULT_MODEL;
+  const zhipuUpstream = ZHIPU_MODELS[chosen];
+  const useZhipu = Boolean(zhipuUpstream);
 
   if (IMAGE_MODELS.has(chosen)) {
     return res.status(400).json({
@@ -85,16 +92,38 @@ app.post('/api/chat', async (req, res) => {
     return res.status(400).json({ error: 'messages must be a non-empty array' });
   }
 
+  if (useZhipu) {
+    if (!ZHIPU_API_KEY) {
+      return res.status(500).json({
+        error:
+          'ZHIPU_API_KEY (or BIGMODEL_API_KEY) is not set. Add your BigModel key for free GLM-4.7-Flash, or switch to z-ai/glm-4.7-flash on OpenRouter (paid).',
+      });
+    }
+  } else if (!OPENROUTER_API_KEY) {
+    return res.status(500).json({
+      error: 'OPENROUTER_API_KEY is not set. Copy .env.example to .env and add your key.',
+    });
+  }
+
   const payload = {
-    model: chosen,
+    model: useZhipu ? zhipuUpstream : chosen,
     messages,
     stream: Boolean(stream),
   };
 
+  const upstreamUrl = useZhipu ? ZHIPU_CHAT_URL : OPENROUTER_CHAT_URL;
+  const upstreamHeaders = useZhipu
+    ? {
+        Authorization: `Bearer ${ZHIPU_API_KEY}`,
+        'Content-Type': 'application/json',
+      }
+    : openRouterHeaders();
+  const providerLabel = useZhipu ? 'Zhipu BigModel' : 'OpenRouter';
+
   try {
-    const upstream = await fetch(OPENROUTER_CHAT_URL, {
+    const upstream = await fetch(upstreamUrl, {
       method: 'POST',
-      headers: openRouterHeaders(),
+      headers: upstreamHeaders,
       body: JSON.stringify(payload),
     });
 
@@ -107,7 +136,7 @@ app.post('/api/chat', async (req, res) => {
         /* keep raw text */
       }
       return res.status(upstream.status).json({
-        error: 'OpenRouter request failed',
+        error: `${providerLabel} request failed`,
         detail,
       });
     }
@@ -144,7 +173,7 @@ app.post('/api/chat', async (req, res) => {
   } catch (err) {
     console.error('chat error:', err);
     return res.status(502).json({
-      error: 'Failed to reach OpenRouter',
+      error: `Failed to reach ${providerLabel}`,
       detail: err.message,
     });
   }
@@ -235,5 +264,8 @@ app.listen(PORT, () => {
   console.log(`SMART Chat running at http://localhost:${PORT}`);
   if (!OPENROUTER_API_KEY) {
     console.warn('Warning: OPENROUTER_API_KEY is not set');
+  }
+  if (!ZHIPU_API_KEY) {
+    console.warn('Warning: ZHIPU_API_KEY / BIGMODEL_API_KEY is not set (needed for free GLM via Zhipu)');
   }
 });

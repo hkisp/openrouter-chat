@@ -27,6 +27,13 @@
 
 图片生成走 `POST /api/v1/images`，按张计费，需 OpenRouter 账户有余额。
 
+
+## GLM-4.7-Flash
+
+- `zhipu/glm-4.7-flash`：走智谱 BigModel 官方免费接口（需设置 `ZHIPU_API_KEY`）
+- `z-ai/glm-4.7-flash`：走 OpenRouter 按量计费（约 $0.06/$0.40 每百万 token）
+- OpenRouter 上目前没有 `z-ai/glm-4.7-flash:free`
+
 ## 快速开始
 
 ```bash
@@ -50,7 +57,8 @@ npm run dev
 
 | 变量 | 说明 | 默认 |
 |------|------|------|
-| `OPENROUTER_API_KEY` | OpenRouter API Key（必填） | — |
+| `OPENROUTER_API_KEY` | OpenRouter API Key（对话/图片必填） | — |
+| `ZHIPU_API_KEY` / `BIGMODEL_API_KEY` | 智谱 BigModel Key（免费 GLM-4.7-Flash） | — |
 | `OPENROUTER_MODEL` | 默认对话模型 | `nvidia/nemotron-3-ultra-550b-a55b:free` |
 | `PORT` | 服务端口 | `3000` |
 | `OPENROUTER_REFERER` | OpenRouter HTTP-Referer | `http://localhost:3000` |
