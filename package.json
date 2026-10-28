@@ -1,7 +1,7 @@
 {
   "name": "openrouter-chat",
   "version": "1.0.0",
-  "description": "Simple web chat UI for OpenRouter free models",
+  "description": "SMART Chat \u2014 web UI for OpenRouter free models",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,7 +10,11 @@
   "engines": {
     "node": ">=18"
   },
-  "keywords": ["openrouter", "chat", "llm"],
+  "keywords": [
+    "openrouter",
+    "chat",
+    "llm"
+  ],
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",

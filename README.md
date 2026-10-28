@@ -1,4 +1,4 @@
-# OpenRouter Chat
+# SMART Chat
 
 简单的网页聊天界面，通过服务端代理调用 [OpenRouter](https://openrouter.ai) 免费模型。API Key 只保存在服务器环境变量中，不会暴露给浏览器。
 

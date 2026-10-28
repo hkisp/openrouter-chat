@@ -45,7 +45,7 @@ app.post('/api/chat', async (req, res) => {
     Authorization: `Bearer ${OPENROUTER_API_KEY}`,
     'Content-Type': 'application/json',
     'HTTP-Referer': process.env.OPENROUTER_REFERER || 'http://localhost:3000',
-    'X-Title': 'OpenRouter Chat',
+    'X-Title': 'SMART Chat',
   };
 
   try {
@@ -112,7 +112,7 @@ app.get('*', (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`OpenRouter Chat running at http://localhost:${PORT}`);
+  console.log(`SMART Chat running at http://localhost:${PORT}`);
   if (!OPENROUTER_API_KEY) {
     console.warn('Warning: OPENROUTER_API_KEY is not set');
   }
