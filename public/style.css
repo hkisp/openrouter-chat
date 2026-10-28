@@ -136,13 +136,6 @@ button { cursor: pointer; }
   flex-direction: column;
   gap: 12px;
 }
-.hint {
-  margin: 0;
-  font-size: 0.72rem;
-  color: var(--muted);
-  line-height: 1.45;
-  padding: 0 2px;
-}
 
 /* —— Buttons —— */
 .btn {
