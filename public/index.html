@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>OpenRouter Chat</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>OpenRouter Chat</h1>
+        <button type="button" class="btn ghost" id="btn-new" title="新对话">＋ 新对话</button>
+      </div>
+      <label class="field">
+        <span>模型</span>
+        <select id="model-select">
+          <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra 550B (free)</option>
+          <option value="openrouter/free">OpenRouter Free Router</option>
+        </select>
+      </label>
+      <button type="button" class="btn danger block" id="btn-clear">清空历史</button>
+      <p class="hint">密钥仅保存在服务器端，不会发到浏览器。</p>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button type="button" class="btn icon" id="btn-menu" aria-label="菜单">☰</button>
+        <div class="topbar-title">
+          <span id="model-label">Nemotron 3 Ultra 550B</span>
+        </div>
+        <button type="button" class="btn ghost compact" id="btn-new-mobile">新对话</button>
+      </header>
+
+      <div class="messages" id="messages" role="log" aria-live="polite"></div>
+
+      <form class="composer" id="composer">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="输入消息… (Enter 发送，Shift+Enter 换行)"
+          autocomplete="off"
+        ></textarea>
+        <button type="submit" class="btn primary" id="btn-send">发送</button>
+      </form>
+    </main>
+  </div>
+  <div class="overlay" id="overlay" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
