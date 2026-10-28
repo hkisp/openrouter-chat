@@ -3,47 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f1a" />
   <title>OpenRouter Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
+  <div class="bg-glow" aria-hidden="true"></div>
   <div class="app">
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <h1>OpenRouter Chat</h1>
-        <button type="button" class="btn ghost" id="btn-new" title="新对话">＋ 新对话</button>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+            <path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>OpenRouter Chat</h1>
+          <p>免费模型 · 流式对话</p>
+        </div>
       </div>
+
+      <button type="button" class="btn new-chat" id="btn-new">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        新对话
+      </button>
+
       <label class="field">
-        <span>模型</span>
-        <select id="model-select">
-          <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra 550B (free)</option>
-          <option value="openrouter/free">OpenRouter Free Router</option>
-        </select>
+        <span class="field-label">模型</span>
+        <div class="select-wrap">
+          <select id="model-select">
+            <option value="nvidia/nemotron-3-ultra-550b-a55b:free">Nemotron 3 Ultra 550B（免费）</option>
+            <option value="openrouter/free">OpenRouter Free Router</option>
+          </select>
+          <svg class="select-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </label>
-      <button type="button" class="btn danger block" id="btn-clear">清空历史</button>
-      <p class="hint">密钥仅保存在服务器端，不会发到浏览器。</p>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn danger block" id="btn-clear">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+            <path d="M4 7h16M9 7V5h6v2M8 7l1 12h6l1-12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          清空历史
+        </button>
+        <p class="hint">密钥仅保存在服务器端，不会发到浏览器。</p>
+      </div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <button type="button" class="btn icon" id="btn-menu" aria-label="菜单">☰</button>
+        <button type="button" class="btn icon" id="btn-menu" aria-label="菜单">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
         <div class="topbar-title">
-          <span id="model-label">Nemotron 3 Ultra 550B</span>
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="model-label">Nemotron 3 Ultra 550B（免费）</span>
         </div>
         <button type="button" class="btn ghost compact" id="btn-new-mobile">新对话</button>
       </header>
 
       <div class="messages" id="messages" role="log" aria-live="polite"></div>
 
-      <form class="composer" id="composer">
-        <textarea
-          id="input"
-          rows="1"
-          placeholder="输入消息… (Enter 发送，Shift+Enter 换行)"
-          autocomplete="off"
-        ></textarea>
-        <button type="submit" class="btn primary" id="btn-send">发送</button>
-      </form>
+      <div class="composer-wrap">
+        <form class="composer" id="composer">
+          <textarea
+            id="input"
+            rows="1"
+            placeholder="输入消息… Enter 发送，Shift+Enter 换行"
+            autocomplete="off"
+          ></textarea>
+          <button type="submit" class="btn send" id="btn-send" aria-label="发送">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+              <path d="M5 12h12M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </form>
+        <p class="composer-hint">内容由 AI 生成，请核实重要信息</p>
+      </div>
     </main>
   </div>
   <div class="overlay" id="overlay" hidden></div>

@@ -1,5 +1,12 @@
 const STORAGE_KEY = 'openrouter-chat-v1';
 
+const SUGGESTIONS = [
+  { tag: '编程', text: '用简单例子解释什么是 Promise' },
+  { tag: '写作', text: '帮我写一段产品介绍开场白' },
+  { tag: '学习', text: '用三句话讲清机器学习是什么' },
+  { tag: '日常', text: '给我 5 个周末放松的小点子' },
+];
+
 const els = {
   messages: document.getElementById('messages'),
   form: document.getElementById('composer'),
@@ -44,17 +51,43 @@ function modelShortName(id) {
   return opt ? opt.textContent : id;
 }
 
+function renderEmpty() {
+  const empty = document.createElement('div');
+  empty.className = 'empty';
+  empty.innerHTML = `
+    <div class="empty-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none">
+        <path d="M12 3l2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>开始一段新对话</h2>
+    <p>选择免费模型，输入问题后发送。支持流式输出，历史保存在本机浏览器。</p>
+    <div class="suggestions"></div>
+  `;
+  const grid = empty.querySelector('.suggestions');
+  for (const s of SUGGESTIONS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'suggestion';
+    btn.innerHTML = `<span>${s.tag}</span>${s.text}`;
+    btn.addEventListener('click', () => {
+      if (busy) return;
+      els.input.value = s.text;
+      els.input.dispatchEvent(new Event('input'));
+      els.form.requestSubmit();
+    });
+    grid.appendChild(btn);
+  }
+  return empty;
+}
+
 function render() {
   els.model.value = state.model;
   els.modelLabel.textContent = modelShortName(state.model);
   els.messages.innerHTML = '';
 
   if (!state.messages.length) {
-    const empty = document.createElement('div');
-    empty.className = 'empty';
-    empty.innerHTML =
-      '<h2>开始对话</h2><p>选择免费模型，输入问题后点击发送。支持流式输出，历史保存在本机浏览器。</p>';
-    els.messages.appendChild(empty);
+    els.messages.appendChild(renderEmpty());
     return;
   }
 
@@ -69,9 +102,17 @@ function createBubble(role, content, streaming = false) {
   div.className = `msg ${role}`;
   const label =
     role === 'user' ? '你' : role === 'assistant' ? '助手' : role === 'error' ? '错误' : role;
+  const badgeLetter =
+    role === 'user' ? '你' : role === 'assistant' ? 'AI' : '!';
+
   const roleEl = document.createElement('span');
   roleEl.className = 'role';
-  roleEl.textContent = label;
+  const badge = document.createElement('span');
+  badge.className = 'role-badge';
+  badge.textContent = badgeLetter;
+  roleEl.appendChild(badge);
+  roleEl.appendChild(document.createTextNode(label));
+
   const body = document.createElement('div');
   body.className = 'body';
   body.textContent = content || '';
